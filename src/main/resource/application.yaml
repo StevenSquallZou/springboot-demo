@@ -1,0 +1,9 @@
+server:
+  port: 8080
+  error:
+    include-message: always
+    include-stacktrace: always
+
+spring:
+  application:
+    name: springboot-demo
