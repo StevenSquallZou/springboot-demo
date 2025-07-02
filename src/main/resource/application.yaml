@@ -4,6 +4,48 @@ server:
     include-message: always
     include-stacktrace: always
 
+
 spring:
   application:
     name: springboot-demo
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    hibernate.naming.physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+
+datasource:
+  app:
+    jdbc-url: jdbc:mysql://localhost:3306
+    username: ${APP_DB_USERNAME}
+    password: ${APP_DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    pool-name: appHikariCP
+    maximum-pool-size: 10
+    minimum-idle: 5
+    connection-timeout: 30000
+    connection-test-query: SELECT 1
+
+  world:
+    jdbc-url: jdbc:mysql://localhost:3306/world
+    username: ${WORLD_DB_USERNAME}
+    password: ${WORLD_DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    pool-name: worldHikariCP
+    maximum-pool-size: 10
+    minimum-idle: 5
+    connection-timeout: 30000
+    connection-test-query: SELECT 1
+
+  sakila:
+    jdbc-url: jdbc:mysql://localhost:3306/sakila
+    username: ${SAKILA_DB_USERNAME}
+    password: ${SAKILA_DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    pool-name: sailaHikariCP
+    maximum-pool-size: 10
+    minimum-idle: 5
+    connection-timeout: 30000
+    connection-test-query: SELECT 1

@@ -13,7 +13,7 @@ public class DemoController {
 
     /**
      * Sample: <a href="http://localhost:8080/hello?content=Steven">...</a>
-     * @param content the content to include in the greeting, defaults to "World"
+     * @param content - the content to include in the greeting, defaults to "World"
      * @return Hello {content}!
      */
     @GetMapping("/hello")
