@@ -26,6 +26,7 @@ public class ActorServiceJpaImpl implements IActorService {
 
 
     @Override
+    @Transactional(readOnly = true)
     public Actor queryByActorId(Integer actorId) {
         log.info("queryByName -> querying actor repository by actorId: {}", actorId);
         Optional<Actor> optional = actorRepository.findById(actorId);
