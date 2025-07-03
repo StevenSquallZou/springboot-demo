@@ -6,7 +6,10 @@ This repo is an experimental space to try features of SpringBoot.
 
 ## Features:
 - RESTful demo API: 
-    - Default param: http://localhost:8080/hello
-    - Specific content param: http://localhost:8080/hello?content=Steven
+  - Default param: http://localhost:8080/hello
+  - Specific content param: http://localhost:8080/hello?content=Steven
 - RESTful country API:
-    - Query by country name: http://localhost:8080/country?name=China
+  - Query by country name: http://localhost:8080/country?name=China
+- RESTful actor API:
+  - Query by actor id: http://localhost:8080/actor/1
+  - Query by actor first name or last name: http://localhost:8080/actor?name=NICK
