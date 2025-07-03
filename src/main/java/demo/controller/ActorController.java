@@ -3,9 +3,11 @@ package demo.controller;
 
 import demo.model.sakila.Actor;
 import demo.service.api.IActorService;
+import demo.dto.ActorDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -23,8 +25,8 @@ public class ActorController {
      * @return the actor
      */
     @GetMapping("/{actorId}")
-    public Actor queryByActorId(@PathVariable Integer actorId) {
-        log.info("queryByActorId -> input actorId: {}", actorId);
+    public Actor queryActorByActorId(@PathVariable Integer actorId) {
+        log.info("queryActorByActorId -> input actorId: {}", actorId);
 
         return actorService.queryByActorId(actorId);
     }
@@ -40,6 +42,29 @@ public class ActorController {
         log.info("queryActorByName -> input name: {}", name);
 
         return actorService.queryByName(name);
+    }
+
+
+    /**
+     * Sample: <a href="http://localhost:8080/actor">...</a>
+     * @param actorDto - the actor dto
+     * @return ResponseEntity
+     */
+    @PutMapping
+    public ResponseEntity<Actor> updateActor(@RequestBody ActorDto actorDto) {
+        Actor actor = queryActorByActorId(actorDto.getActorId());
+        if (actor == null) {
+            log.warn("updateActor -> actor not found for actorId: {}", actorDto.getActorId());
+            return ResponseEntity.notFound().build();
+        }
+
+        actor.setFirstName(actorDto.getFirstName());
+        actor.setLastName(actorDto.getLastName());
+
+        Actor updatedActor = actorService.updateActor(actor);
+        log.info("updateActor -> actor has been updated, updated actor: {}", updatedActor);
+
+        return ResponseEntity.ok(updatedActor);
     }
 
 

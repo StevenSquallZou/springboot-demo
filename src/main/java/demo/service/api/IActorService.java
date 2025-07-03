@@ -9,4 +9,6 @@ public interface IActorService {
     Actor queryByActorId(Integer actorId);
 
     List<Actor> queryByName(String name);
+
+    Actor updateActor(Actor actor);
 }

@@ -8,7 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,6 +52,15 @@ public class ActorServiceJpaImpl implements IActorService {
         log.info("queryByName -> queried actor count: {}", CollectionUtils.size(actorList));
 
         return actorList;
+    }
+
+
+    @Override
+    @Transactional(transactionManager = "sakilaTransactionManager", propagation = Propagation.REQUIRED)
+    public Actor updateActor(Actor actor) {
+        actor.setLastUpdate(LocalDateTime.now());
+
+        return actorRepository.saveAndFlush(actor);
     }
 
 }
