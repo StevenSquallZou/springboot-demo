@@ -25,8 +25,8 @@ public class ActorController {
      * @return the actor
      */
     @GetMapping("/{actorId}")
-    public Actor queryActorByActorId(@PathVariable Integer actorId) {
-        log.info("queryActorByActorId -> input actorId: {}", actorId);
+    public Actor getActorByActorId(@PathVariable Integer actorId) {
+        log.info("getActorByActorId -> input actorId: {}", actorId);
 
         return actorService.queryByActorId(actorId);
     }
@@ -38,8 +38,8 @@ public class ActorController {
      * @return the actor list
      */
     @GetMapping
-    public List<Actor> queryActorByName(@RequestParam(name = "name") String name) {
-        log.info("queryActorByName -> input name: {}", name);
+    public List<Actor> getActorByName(@RequestParam(name = "name") String name) {
+        log.info("getActorByName -> input name: {}", name);
 
         return actorService.queryByName(name);
     }
@@ -52,7 +52,7 @@ public class ActorController {
      */
     @PutMapping
     public ResponseEntity<Actor> updateActor(@RequestBody ActorDto actorDto) {
-        Actor actor = queryActorByActorId(actorDto.getActorId());
+        Actor actor = getActorByActorId(actorDto.getActorId());
         if (actor == null) {
             log.warn("updateActor -> actor not found for actorId: {}", actorDto.getActorId());
             return ResponseEntity.notFound().build();

@@ -24,8 +24,8 @@ public class CountryController {
      * @return the country list
      */
     @GetMapping("/country")
-    public List<Country> queryCountryByName(@RequestParam(name = "name") String name) {
-        log.info("queryCountryByName -> input name: {}", name);
+    public List<Country> getCountryByName(@RequestParam(name = "name") String name) {
+        log.info("getCountryByName -> input name: {}", name);
 
         return countryService.queryByName(name);
     }
