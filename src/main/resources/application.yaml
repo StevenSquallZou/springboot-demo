@@ -38,7 +38,6 @@ app:
   redis:
     loadBatchSize: 100
 
-
 datasource:
   app:
     jdbc-url: jdbc:mysql://localhost:3306
