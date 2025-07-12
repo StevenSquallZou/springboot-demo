@@ -8,13 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
-@Service
-public class FilmTextServiceImpl implements IFilmTextService {
+@Service("filmTextServiceMyBatisImpl")
+public class FilmTextServiceMyBatisImpl implements IFilmTextService {
     private FilmTextMapper filmTextMapper;
 
 
     @Autowired
-    public FilmTextServiceImpl(FilmTextMapper filmTextMapper) {
+    public FilmTextServiceMyBatisImpl(FilmTextMapper filmTextMapper) {
         this.filmTextMapper = filmTextMapper;
     }
 

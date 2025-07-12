@@ -5,6 +5,7 @@ import demo.model.sakila.FilmText;
 import demo.service.api.IFilmTextService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -38,7 +39,10 @@ public class FilmTextController {
 
 
     @Autowired
+    @Qualifier("filmTextServiceRedisImpl")
     public void setFilmTextService(IFilmTextService filmTextService) {
+        log.info("setFilmTextService -> Setting filmTextService: {}", filmTextService.getClass().getSimpleName());
         this.filmTextService = filmTextService;
     }
+
 }

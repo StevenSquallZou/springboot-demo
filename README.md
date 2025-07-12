@@ -28,12 +28,15 @@ This repo is an experimental space to try features of SpringBoot.
 - 
   FLUSH PRIVILEGES;
 - Set up the following environment variables:
+  - BASE_JDBC_URL: the base JDBC URL for MySQL, e.g., `jdbc:mysql://localhost:3306`
   - APP_DB_USERNAME: the DB username used by app for all the databases
   - APP_DB_PASSWORD: the DB password used by app for all the databases
   - WORLD_DB_USERNAME: the DB username for the "world" database
   - WORLD_DB_PASSWORD: the DB password for the "world" database
   - SAKILA_DB_USERNAME: the DB username for the "sakila" database
   - SAKILA_DB_PASSWORD: the DB password for the "sakila" database
+  - REDIS_HOST: the Redis host
+  - REDIS_PORT: the Redis port (default is 6379)
 
 ## Start Command:
     java -jar C:\MyWorkspaces\IntelliJ\springboot-demo\target\springboot-demo-1.0-SNAPSHOT.jar
@@ -49,5 +52,5 @@ This repo is an experimental space to try features of SpringBoot.
   - HTTP GET: Query by actor first name or last name based on Spring JPA: http://localhost:8080/actor?name=NICK
   - HTTP PUT: update actor based on Spring JPA: http://localhost:8080/actor
 - RESTful film text APIs:
-  - HTTP GET: Query film text by film id based on mybatis: http://localhost:8080/filmText/1
-  - HTTP POST: Save a new film text based on mybatis: http://localhost:8080/filmText
+  - HTTP GET: Query film text by film id based on mybatis/redis: http://localhost:8080/filmText/1
+  - HTTP POST: Save a new film text based on mybatis/redis: http://localhost:8080/filmText

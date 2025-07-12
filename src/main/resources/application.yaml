@@ -1,8 +1,8 @@
 #debug: true
-#logging:
-#  level:
-#    root: DEBUG
-#    demo: DEBUG
+logging:
+  level:
+    root: INFO
+    demo: DEBUG
 
 
 server:
@@ -15,32 +15,36 @@ server:
 spring:
   application:
     name: springboot-demo
+
   jpa:
     show-sql: true
     properties:
       hibernate:
         format_sql: true
     hibernate.naming.physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-  redis:
-    host: localhost
-    port: 6379
-    password: ${REDIS_PASSWORD}
-    timeout: 2000
-    database: 0
-    lettuce:
-      max-active: 8
-      max-idle: 8
-      min-idle: 0
+
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
       timeout: 2000
+      database: 0
+      lettuce:
+        max-active: 8
+        max-idle: 8
+        min-idle: 0
+        timeout: 2000
 
 
 app:
   redis:
     loadBatchSize: 100
 
+
 datasource:
   app:
-    jdbc-url: jdbc:mysql://localhost:3306
+    jdbc-url: ${BASE_JDBC_URL}
     username: ${APP_DB_USERNAME}
     password: ${APP_DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -51,7 +55,7 @@ datasource:
     connection-test-query: SELECT 1
 
   world:
-    jdbc-url: jdbc:mysql://localhost:3306/world
+    jdbc-url: ${BASE_JDBC_URL}/world
     username: ${WORLD_DB_USERNAME}
     password: ${WORLD_DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -62,7 +66,7 @@ datasource:
     connection-test-query: SELECT 1
 
   sakila:
-    jdbc-url: jdbc:mysql://localhost:3306/sakila
+    jdbc-url: ${BASE_JDBC_URL}/sakila
     username: ${SAKILA_DB_USERNAME}
     password: ${SAKILA_DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
