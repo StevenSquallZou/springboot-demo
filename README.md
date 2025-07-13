@@ -57,3 +57,5 @@ This repo is an experimental space to try features of SpringBoot.
     - Query film text by film id based on mybatis/redis: http://localhost:8080/filmText/1
     - Query film text attribute by film id and attribute name based on mybatis/redis: http://localhost:8080/filmText?filmId=1&attributeName=title
   - HTTP POST: Create a new film text based on mybatis/redis: http://localhost:8080/filmText
+- Spring MVC demo:
+  - HTTP GET: http://localhost:8080/test
