@@ -26,8 +26,14 @@ public class FilmTextServiceMyBatisImpl implements IFilmTextService {
 
 
     @Override
-    public int saveFilmText(FilmText filmText) {
+    public int createFilmText(FilmText filmText) {
         return filmTextMapper.insertFilmText(filmText);
+    }
+
+
+    @Override
+    public Object getFilmTextAttribute(Integer filmId, String attributeName) {
+        throw new UnsupportedOperationException("getFilmTextAttribute NOT implemented yet");
     }
 
 }

@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -51,7 +52,7 @@ public class ActorController {
      * @return ResponseEntity
      */
     @PutMapping
-    public ResponseEntity<Actor> updateActor(@RequestBody ActorDto actorDto) {
+    public ResponseEntity<Actor> updateActor(@Validated @RequestBody ActorDto actorDto) {
         Actor actor = getActorByActorId(actorDto.getActorId());
         if (actor == null) {
             log.warn("updateActor -> actor not found for actorId: {}", actorDto.getActorId());

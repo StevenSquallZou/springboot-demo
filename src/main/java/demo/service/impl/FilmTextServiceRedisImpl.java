@@ -1,36 +1,53 @@
 package demo.service.impl;
 
 
-import demo.config.RedisConfig;
+import demo.mapper.FilmTextMapper;
 import demo.model.sakila.FilmText;
+import demo.redis.FilmTextRedisManager;
 import demo.service.api.IFilmTextService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service("filmTextServiceRedisImpl")
 @Slf4j
 public class FilmTextServiceRedisImpl implements IFilmTextService {
-    protected RedisTemplate<String, Object> redisTemplate;
+    protected FilmTextRedisManager filmTextRedisManager;
+    protected FilmTextMapper filmTextMapper;
 
 
-    public FilmTextServiceRedisImpl(RedisTemplate<String, Object> redisTemplate) {
-        this.redisTemplate = redisTemplate;
+    @Autowired
+    public FilmTextServiceRedisImpl(FilmTextRedisManager filmTextRedisManager, FilmTextMapper filmTextMapper) {
+        this.filmTextRedisManager = filmTextRedisManager;
+        this.filmTextMapper = filmTextMapper;
     }
 
 
     @Override
     public FilmText getFilmTextByFilmId(Integer filmId) {
-        String key = RedisConfig.FILM_TEXT_VALUE_KEY_PREFIX + filmId;
-        log.info("getFilmTextByFilmId -> retrieving film text for filmId: {}, redis key: {}", filmId, key);
-
-        return (FilmText) redisTemplate.opsForValue().get(key);
+        return filmTextRedisManager.getFilmText(filmId);
     }
 
 
     @Override
-    public int saveFilmText(FilmText filmText) {
-        return 0;
+    @Transactional
+    public int createFilmText(FilmText filmText) {
+        log.info("saveFilmText -> inserting film text to DB: {}", filmText);
+        int result = filmTextMapper.insertFilmText(filmText);
+        log.info("saveFilmText -> insert result: {}", result);
+
+        filmTextRedisManager.update(filmText);
+        log.info("saveFilmText -> updated redis for filmId={}", filmText.getFilmId());
+
+        return result;
     }
+
+
+    @Override
+    public Object getFilmTextAttribute(Integer filmId, String attributeName) {
+        return filmTextRedisManager.getFilmTextAttribute(filmId, attributeName);
+    }
+
 }

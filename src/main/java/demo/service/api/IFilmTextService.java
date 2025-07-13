@@ -7,5 +7,7 @@ import demo.model.sakila.FilmText;
 public interface IFilmTextService {
     FilmText getFilmTextByFilmId(Integer filmId);
 
-    int saveFilmText(FilmText filmText);
+    int createFilmText(FilmText filmText);
+
+    Object getFilmTextAttribute(Integer filmId, String attributeName);
 }

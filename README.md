@@ -37,6 +37,7 @@ This repo is an experimental space to try features of SpringBoot.
   - SAKILA_DB_PASSWORD: the DB password for the "sakila" database
   - REDIS_HOST: the Redis host
   - REDIS_PORT: the Redis port (default is 6379)
+  - REDIS_PASSWORD: the Redis password (if any)
 
 ## Start Command:
     java -jar C:\MyWorkspaces\IntelliJ\springboot-demo\target\springboot-demo-1.0-SNAPSHOT.jar
@@ -52,5 +53,7 @@ This repo is an experimental space to try features of SpringBoot.
   - HTTP GET: Query by actor first name or last name based on Spring JPA: http://localhost:8080/actor?name=NICK
   - HTTP PUT: update actor based on Spring JPA: http://localhost:8080/actor
 - RESTful film text APIs:
-  - HTTP GET: Query film text by film id based on mybatis/redis: http://localhost:8080/filmText/1
-  - HTTP POST: Save a new film text based on mybatis/redis: http://localhost:8080/filmText
+  - HTTP GET: 
+    - Query film text by film id based on mybatis/redis: http://localhost:8080/filmText/1
+    - Query film text attribute by film id and attribute name based on mybatis/redis: http://localhost:8080/filmText?filmId=1&attributeName=title
+  - HTTP POST: Create a new film text based on mybatis/redis: http://localhost:8080/filmText

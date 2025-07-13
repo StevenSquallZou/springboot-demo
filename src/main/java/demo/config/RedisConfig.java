@@ -11,9 +11,6 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 public class RedisConfig {
-    public static final String FILM_TEXT_VALUE_KEY_PREFIX = "filmTextValue:";
-    public static final String FILM_TEXT_HASH_KEY_PREFIX = "filmTextHash:";
-
 
     @Bean
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
