@@ -4,6 +4,7 @@ package demo.redis;
 import demo.model.sakila.FilmText;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -11,17 +12,24 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 
 @Component
 @Slf4j
-public class FilmTextRedisManager implements CommandLineRunner {
+public class FilmTextRedisManager implements CommandLineRunner, InitializingBean {
     public static final String FILM_TEXT_VALUE_KEY_PREFIX = "filmTextValue:";
     public static final String FILM_TEXT_HASH_KEY_PREFIX = "filmTextHash:";
+    private static final String FILM_TEXT_QUERY_WITH_LIMIT = "SELECT * FROM sakila.film_text LIMIT %d OFFSET %d";
+    private static final String FILM_TEXT_QUERY = "SELECT * FROM sakila.film_text WHERE film_id = ?";
 
     @Value("${app.redis.loadBatchSize}")
     protected int loadBatchSize;
+    @Value("${app.redis.expirationSeconds.filmText:${app.redis.expirationSeconds.default}}")
+    protected int expirationSeconds;
     protected JdbcTemplate jdbcTemplate;
     protected RedisTemplate<String, Object> redisTemplate;
 
@@ -46,7 +54,7 @@ public class FilmTextRedisManager implements CommandLineRunner {
         int offset = 0;
 
         while (hasMore) {
-            String sql = String.format("SELECT * FROM sakila.film_text ORDER BY FILM_ID LIMIT %d OFFSET %d", loadBatchSize, offset);
+            String sql = String.format(FILM_TEXT_QUERY_WITH_LIMIT, loadBatchSize, offset);
             log.debug("batchLoadFilmText -> Executing SQL: {}", sql);
             List<FilmText> filmTextList = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(FilmText.class));
 
@@ -93,24 +101,47 @@ public class FilmTextRedisManager implements CommandLineRunner {
     }
 
 
-    public void update(FilmText filmText) {
+    public void updateAll(FilmText filmText) {
         updateOpsForValue(filmText);
 
         updateOpsForHash(filmText);
     }
 
 
-    public void updateOpsForValue(FilmText filmText) {
+    private void updateOpsForValue(FilmText filmText) {
         String valueKey = getFilmTextValueKey(filmText.getFilmId());
-        redisTemplate.opsForValue().set(valueKey, filmText);
+
+        redisTemplate.opsForValue().set(valueKey, filmText, expirationSeconds, TimeUnit.SECONDS);
     }
 
 
     private void updateOpsForHash(FilmText filmText) {
+        Map<String, Object> filmTextMap = new HashMap<>();
+        filmTextMap.put("film_id", filmText.getFilmId());
+        filmTextMap.put("title", filmText.getTitle());
+        filmTextMap.put("description", filmText.getDescription());
+
         String hashKey = getFilmTextHashKey(filmText.getFilmId());
-        redisTemplate.opsForHash().put(hashKey, "film_id", filmText.getFilmId());
-        redisTemplate.opsForHash().put(hashKey, "title", filmText.getTitle());
-        redisTemplate.opsForHash().put(hashKey, "description", filmText.getDescription());
+
+        redisTemplate.opsForHash().putAll(hashKey, filmTextMap);
+        redisTemplate.expire(hashKey, expirationSeconds, TimeUnit.SECONDS);
+    }
+
+
+    public FilmText reloadFromDB(Integer filmId) {
+        log.info("reloadFromDB -> Reloading film text from DB for filmId: {}", filmId);
+        log.debug("reloadFromDB -> SQL: {}", FILM_TEXT_QUERY);
+        List<FilmText> filmTextList = jdbcTemplate.query(FILM_TEXT_QUERY, new BeanPropertyRowMapper<>(FilmText.class), filmId);
+
+        if (CollectionUtils.isEmpty(filmTextList)) {
+            log.warn("reloadFromDB -> No film text found in DB for filmId: {}", filmId);
+            return null;
+        }
+
+        FilmText filmText = filmTextList.get(0);
+        updateAll(filmText);
+
+        return filmText;
     }
 
 
@@ -121,6 +152,13 @@ public class FilmTextRedisManager implements CommandLineRunner {
 
     public static String getFilmTextHashKey(Integer filmId) {
         return FILM_TEXT_HASH_KEY_PREFIX + filmId;
+    }
+
+
+    @Override
+    public void afterPropertiesSet() {
+        log.info("loadBatchSize: {}", loadBatchSize);
+        log.info("expirationSeconds: {}", expirationSeconds);
     }
 
 }

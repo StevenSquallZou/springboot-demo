@@ -40,6 +40,9 @@ spring:
 app:
   redis:
     loadBatchSize: 100
+    expirationSeconds:
+      default: 300
+      filmText: 5
 
 
 datasource:

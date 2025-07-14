@@ -27,7 +27,20 @@ public class FilmTextServiceRedisImpl implements IFilmTextService {
 
     @Override
     public FilmText getFilmTextByFilmId(Integer filmId) {
-        return filmTextRedisManager.getFilmText(filmId);
+        FilmText filmText = filmTextRedisManager.getFilmText(filmId);
+        if (filmText != null) {
+            log.info("getFilmTextByFilmId -> Film text found in Redis for filmId={}", filmId);
+            return filmText;
+        }
+
+        filmText = filmTextRedisManager.reloadFromDB(filmId);
+        if (filmText != null) {
+            return filmText;
+        }
+
+        log.warn("getFilmTextByFilmId -> No film text found in Redis and DB for filmId={}", filmId);
+
+        return null;
     }
 
 
@@ -38,7 +51,7 @@ public class FilmTextServiceRedisImpl implements IFilmTextService {
         int result = filmTextMapper.insertFilmText(filmText);
         log.info("saveFilmText -> insert result: {}", result);
 
-        filmTextRedisManager.update(filmText);
+        filmTextRedisManager.updateAll(filmText);
         log.info("saveFilmText -> updated redis for filmId={}", filmText.getFilmId());
 
         return result;
@@ -47,7 +60,21 @@ public class FilmTextServiceRedisImpl implements IFilmTextService {
 
     @Override
     public Object getFilmTextAttribute(Integer filmId, String attributeName) {
-        return filmTextRedisManager.getFilmTextAttribute(filmId, attributeName);
+        Object filmTextAttributeValue = filmTextRedisManager.getFilmTextAttribute(filmId, attributeName);
+        if (filmTextAttributeValue != null) {
+            log.info("getFilmTextAttribute -> Film text attribute found in Redis for filmId={}, filmTextAttributeValue={}", filmId, filmTextAttributeValue);
+            return filmTextAttributeValue;
+        }
+
+        FilmText filmText = filmTextRedisManager.reloadFromDB(filmId);
+        if (filmText != null) {
+            filmTextAttributeValue = filmTextRedisManager.getFilmTextAttribute(filmId, attributeName);
+            return filmTextAttributeValue;
+        }
+
+        log.warn("getFilmTextAttribute -> No film text found in Redis and DB for filmId={}", filmId);
+
+        return null;
     }
 
 }
