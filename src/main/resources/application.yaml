@@ -47,7 +47,7 @@ app:
 
 datasource:
   app:
-    jdbc-url: ${BASE_JDBC_URL}/world
+    jdbc-url: ${BASE_JDBC_URL}
     username: ${APP_DB_USERNAME}
     password: ${APP_DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
