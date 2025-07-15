@@ -11,9 +11,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class DemoApplication {
 
     public static void main(String[] args) {
-        log.info("main -> Starting DemoApplication...");
+        log.info("main -> starting DemoApplication...");
+
         SpringApplication.run(DemoApplication.class, args);
-        log.info("main -> Started DemoApplication");
+
+        log.info("main -> started DemoApplication");
     }
 
 }
