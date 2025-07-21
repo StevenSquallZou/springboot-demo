@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: springboot-demo-deploy
+  labels:
+    app: springboot-demo-app
+
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: springboot-demo
+  strategy:
+    type: rollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: springboot-demo
+    containers:
+      - name: springboot-demo-container
+        image: springboot-demo:v1.0.0
+        ports:
+        - containerPort: 8080
+        envFrom:
+        - configMapRef:
+            name: springboot-demo-configmap
+        - secretRef:
+            name: springboot-demo-secret
