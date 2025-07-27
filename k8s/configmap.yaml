@@ -11,5 +11,5 @@ data:
   APP_DB_USERNAME: "app"
   WORLD_DB_USERNAME: "world_admin"
   SAKILA_DB_USERNAME: "sakila_admin"
-  REDIS_HOST: "192.168.150.128"
+  REDIS_HOST: "192.168.150.130"
   REDIS_PORT: "6379"
