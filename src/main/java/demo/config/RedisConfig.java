@@ -33,8 +33,7 @@ public class RedisConfig {
 
     private void printRedisConfig(RedisConnectionFactory redisConnectionFactory) {
         // Print Redis connection details
-        if (redisConnectionFactory instanceof LettuceConnectionFactory) {
-            LettuceConnectionFactory lettuceFactory = (LettuceConnectionFactory) redisConnectionFactory;
+        if (redisConnectionFactory instanceof LettuceConnectionFactory lettuceFactory) {
             String host = lettuceFactory.getHostName();
             int port = lettuceFactory.getPort();
             log.info("Redis Connection - Host: {}, Port: {}", host, port);
