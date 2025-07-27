@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
       - name: springboot-demo-container
-        image: springboot-demo:v1.0.0
+        image: localhost/springboot-demo:v1.0.0
         ports:
         - containerPort: 8080
         resources:
