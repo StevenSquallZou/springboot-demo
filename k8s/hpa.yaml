@@ -11,21 +11,39 @@ spec:
     name: springboot-demo-deploy
   minReplicas: 2
   maxReplicas: 5
+
   metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization # Utilization | AverageValue
+        averageUtilization: 50 # Target percentage (e.g., 50% CPU usage)
+        #averageValue: 500m      # Target absolute value (e.g., 500 milli-cores)
   - type: Resource
     resource:
       name: memory
       target:
-        type: Utilization
-        averageUtilization: 10
+        type: Utilization # Utilization | AverageValue
+        averageUtilization: 10 # Target percentage (e.g., 50% memory usage)
+#  - type: Pods
+#    pods:
+#      metric:
+#        name: requests_per_second # need Prometheus
+#      target:
+#        type: AverageValue
+#        averageValue: 1k
+
   behavior:
     scaleDown:
       stabilizationWindowSeconds: 5
       policies:
       - type: Pods
         value: 1
+        periodSeconds: 10
     scaleUp:
       stabilizationWindowSeconds: 5
       policies:
       - type: Pods
         value: 1
+        periodSeconds: 10
