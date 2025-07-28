@@ -7,3 +7,6 @@ buildah push localhost/springboot-demo:v1.0.0 docker-archive:/opt/springboot-dem
 
 # import the image tar file to containerd repo
 sudo ctr -n=k8s.io images import /opt/springboot-demo/image/springboot-demo_v1.0.0.tar
+
+# deploy
+kubectl apply -f /opt/springboot-demo/repo/springboot-demo/k8s
