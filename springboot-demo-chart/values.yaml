@@ -111,15 +111,15 @@ autoscaling:
     scaleDown:
       stabilizationWindowSeconds: 5
       policies:
-        - type: Pods
-          value: 1
-          periodSeconds: 10
+      - type: Pods
+        value: 1
+        periodSeconds: 10
     scaleUp:
       stabilizationWindowSeconds: 5
       policies:
-        - type: Pods
-          value: 1
-          periodSeconds: 10
+      - type: Pods
+        value: 1
+        periodSeconds: 10
 
 # Additional volumes on the output Deployment definition.
 volumes: []
