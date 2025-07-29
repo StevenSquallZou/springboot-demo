@@ -1,0 +1,9 @@
+#!/bin/ksh
+
+APP_NAME=springboot-demo
+APP_VERSION=v1.0.0
+APP_FULL_NAME=${APP_NAME}:${APP_VERSION}
+
+ROOT_DIR=/opt/${APP_NAME}
+REPO_DIR=${ROOT_DIR}/repo/${APP_NAME}
+IMAGE_DIR=${ROOT_DIR}/image
