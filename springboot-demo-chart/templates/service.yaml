@@ -8,7 +8,7 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: http # targetPort can be a specific port number or the containers.ports.name in deployment.yaml
+      targetPort: {{ .Values.container.port }}
       nodePort: {{ .Values.service.nodePort }}
       protocol: TCP
       name: http
