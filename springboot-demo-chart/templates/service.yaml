@@ -1,14 +1,15 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "springboot-demo-chart.fullname" . }}
+  name: {{ include "springboot-demo-chart.fullname" . }}-service
   labels:
     {{- include "springboot-demo-chart.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: http
+      targetPort: http # targetPort can be a specific port number or the containers.ports.name in deployment.yaml
+      nodePort: {{ .Values.service.nodePort }}
       protocol: TCP
       name: http
   selector:

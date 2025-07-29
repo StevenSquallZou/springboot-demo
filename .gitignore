@@ -2,3 +2,4 @@ target/
 *.iml
 /k8s/secret.yaml
 image/
+/springboot-demo-chart/templates/secret.yaml
