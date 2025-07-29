@@ -22,20 +22,20 @@ spec:
         app: springboot-demo
     spec:
       containers:
-      - name: springboot-demo-container
-        image: localhost/springboot-demo:v1.0.0
-        ports:
-        - containerPort: 8080
-        resources:
-          requests:
-            cpu: "100m" # 100毫核（millicores）的 CPU 资源
-            memory: "128Mi"
-            ephemeral-storage: "2Gi" # 该容器请求 2 GiB（Gibibytes）的临时存储空间
-          limits:
-            cpu: "1" # 1个完整的 CPU 核心, 1000m = 1核
-            memory: "500Mi"
-        envFrom:
-        - configMapRef:
-            name: springboot-demo-configmap
-        - secretRef:
-            name: springboot-demo-secret
+        - name: springboot-demo-container
+          image: localhost/springboot-demo:v1.0.0
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: "100m" # 100毫核（millicores）的 CPU 资源
+              memory: "128Mi"
+              ephemeral-storage: "2Gi" # 该容器请求 2 GiB（Gibibytes）的临时存储空间
+            limits:
+              cpu: "1" # 1个完整的 CPU 核心, 1000m = 1核
+              memory: "500Mi"
+          envFrom:
+            - configMapRef:
+                name: springboot-demo-configmap
+            - secretRef:
+                name: springboot-demo-secret
