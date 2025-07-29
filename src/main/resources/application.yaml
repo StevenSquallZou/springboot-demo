@@ -52,8 +52,8 @@ datasource:
     password: ${APP_DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
     pool-name: appHikariCP
-    maximum-pool-size: 10
-    minimum-idle: 5
+    maximum-pool-size: 5
+    minimum-idle: 1
     connection-timeout: 30000
     connection-test-query: SELECT 1
 
@@ -63,8 +63,8 @@ datasource:
     password: ${WORLD_DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
     pool-name: worldHikariCP
-    maximum-pool-size: 10
-    minimum-idle: 5
+    maximum-pool-size: 5
+    minimum-idle: 1
     connection-timeout: 30000
     connection-test-query: SELECT 1
 
@@ -74,7 +74,7 @@ datasource:
     password: ${SAKILA_DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
     pool-name: sailaHikariCP
-    maximum-pool-size: 10
-    minimum-idle: 5
+    maximum-pool-size: 5
+    minimum-idle: 1
     connection-timeout: 30000
     connection-test-query: SELECT 1
