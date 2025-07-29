@@ -1,6 +1,6 @@
 #!/bin/ksh
 
-. ${ROOT_DIR}/bin/profile.ksh
+. bin/profile.ksh
 
 cd ${ROOT_DIR}
 
