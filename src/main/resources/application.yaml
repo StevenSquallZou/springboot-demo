@@ -37,6 +37,16 @@ spring:
         timeout: 2000
 
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
+
+
 app:
   redis:
     loadBatchSize: 100
