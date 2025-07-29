@@ -8,11 +8,11 @@ cd ${ROOT_DIR}
 buildah build -t localhost/${APP_NAME}:${APP_VERSION} -f Dockerfile . && buildah rmi -p
 
 # remove the old image tar file, convert the image file to a tar file
-rm -f ${IMAGE_DIR}/${IMAGE_NAME}.tar
-buildah push localhost/${APP_FULL_NAME} docker-archive:${IMAGE_DIR}/${IMAGE_NAME}.tar
+rm -f ${IMAGE_DIR}/${IMAGE_NAME}
+buildah push localhost/${APP_FULL_NAME} docker-archive:${IMAGE_DIR}/${IMAGE_NAME}
 
 # import the image tar file to containerd repo
-sudo ctr -n=k8s.io images import ${IMAGE_DIR}/${IMAGE_NAME}.tar
+sudo ctr -n=k8s.io images import ${IMAGE_DIR}/${IMAGE_NAME}
 
 # deploy
 kubectl apply -f ${ROOT_DIR}/k8s

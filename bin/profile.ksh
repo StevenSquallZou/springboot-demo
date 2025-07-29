@@ -6,7 +6,7 @@ APP_FULL_NAME=${APP_NAME}:${APP_VERSION}
 
 ROOT_DIR=/opt/${APP_NAME}
 IMAGE_DIR=${ROOT_DIR}/image
-IMAGE_NAME=${APP_NAME}-${APP_VERSION}
+IMAGE_NAME=${APP_NAME}-${APP_VERSION}.tar
 
 # create IMAGE_DIR if it doesn't exist
 if [ ! -d "${IMAGE_DIR}" ]; then
