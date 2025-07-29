@@ -2,4 +2,5 @@
 
 . ./profile.ksh
 
-chmod -R 775 ${ROOT_DIR}
+cd ${ROOT_DIR}/bin
+chmod 775 *
