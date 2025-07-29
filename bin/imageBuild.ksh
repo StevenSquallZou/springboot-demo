@@ -13,6 +13,3 @@ buildah push localhost/${APP_FULL_NAME} docker-archive:${IMAGE_DIR}/${IMAGE_NAME
 
 # import the image tar file to containerd repo
 sudo ctr -n=k8s.io images import ${IMAGE_DIR}/${IMAGE_NAME}
-
-# deploy to K8s
-kubectl apply -f ${ROOT_DIR}/k8s
