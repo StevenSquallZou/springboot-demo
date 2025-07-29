@@ -37,8 +37,8 @@ spec:
 #        target:
 #          type: AverageValue
 #          averageValue: 1k
-    {{- if .Values.autoscaling.behavior }}
-    behavior:
-      {{- toYaml .Values.autoscaling.behavior | nindent 2 }}
-    {{- end }}
+  {{- if .Values.autoscaling.behavior }}
+  behavior:
+    {{- toYaml .Values.autoscaling.behavior | nindent 4 }}
+  {{- end }}
 {{- end }}
