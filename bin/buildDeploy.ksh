@@ -2,6 +2,8 @@
 
 . ./profile.ksh
 
+cd ${${ROOT_DIR}}
+
 # use buildah to build Dockerfile to image
 buildah build -t localhost/${APP_NAME}:${APP_VERSION} -f Dockerfile . && buildah rmi -p
 
@@ -13,4 +15,4 @@ buildah push localhost/${APP_FULL_NAME} docker-archive:${IMAGE_DIR}/${APP_FULL_N
 sudo ctr -n=k8s.io images import ${IMAGE_DIR}/${APP_FULL_NAME}.tar
 
 # deploy
-kubectl apply -f ${REPO_DIR}/k8s
+kubectl apply -f ${${ROOT_DIR}}/k8s

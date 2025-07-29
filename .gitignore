@@ -1,3 +1,4 @@
 target/
 *.iml
 /k8s/secret.yaml
+image/

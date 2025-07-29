@@ -3,7 +3,7 @@
 . ./profile.ksh
 
 # maven build
-cd ${REPO_DIR}
+cd ${ROOT_DIR}
 mvn clean install
 
 # image build and deploy
