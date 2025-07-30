@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 public class FilmTextRedisManager implements CommandLineRunner, InitializingBean {
     public static final String FILM_TEXT_VALUE_KEY_PREFIX = "filmTextValue:";
     public static final String FILM_TEXT_HASH_KEY_PREFIX = "filmTextHash:";
-    private static final String FILM_TEXT_QUERY_WITH_LIMIT = "SELECT * FROM sakila.film_text LIMIT %d OFFSET %d";
+    private static final String FILM_TEXT_QUERY_WITH_LIMIT = "SELECT * FROM sakila.film_text ORDER BY film_id LIMIT %d OFFSET %d";
     private static final String FILM_TEXT_QUERY = "SELECT * FROM sakila.film_text WHERE film_id = ?";
 
     @Value("${app.redis.loadBatchSize}")
