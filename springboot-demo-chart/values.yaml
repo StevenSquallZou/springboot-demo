@@ -71,13 +71,15 @@ ingress:
       paths:
         - path: /hello
           pathType: Prefix
-    - host: springboot-demo.country.com
+    - host: springboot-demo.world.com
       paths:
         - path: /country
           pathType: Prefix
-    - host: "*"
+    - host: springboot-demo.sakila.com
       paths:
-        - path: /
+        - path: /actor
+          pathType: Prefix
+        - path: /filmText
           pathType: Prefix
   tls: []
   #  - secretName: chart-example-tls
