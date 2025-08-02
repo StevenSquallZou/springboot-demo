@@ -82,7 +82,7 @@ ingress:
         - path: /filmText
           pathType: Prefix
     # catch-all rule (must be LAST)
-    - host: springboot-demo.*.com
+    - host: springboot-demo*.com
       paths:
         - path: /
           pathType: Prefix
