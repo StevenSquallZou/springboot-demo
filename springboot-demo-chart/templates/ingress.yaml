@@ -40,6 +40,7 @@ spec:
                   number: {{ $.Values.service.port }}
           {{- end }}
     {{- end }}
+    # catch-all rule (must be LAST)
     - http:
         paths:
           - path: /
