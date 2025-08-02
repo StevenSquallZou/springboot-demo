@@ -75,7 +75,7 @@ ingress:
       paths:
         - path: /country
           pathType: Prefix
-    - host: *
+    - host: "*"
       paths:
         - path: /
           pathType: Prefix
