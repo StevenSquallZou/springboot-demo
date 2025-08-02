@@ -75,6 +75,10 @@ ingress:
       paths:
         - path: /country
           pathType: Prefix
+    - host: *
+      paths:
+        - path: /
+          pathType: Prefix
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
