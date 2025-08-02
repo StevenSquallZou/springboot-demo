@@ -67,22 +67,22 @@ ingress:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: springboot-demo.hello.com
+    - host: hello.springboot-demo.com
       paths:
         - path: /hello
           pathType: Prefix
-    - host: springboot-demo.world.com
+    - host: world.springboot-demo.com
       paths:
         - path: /country
           pathType: Prefix
-    - host: springboot-demo.sakila.com
+    - host: sakila.springboot-demo.com
       paths:
         - path: /actor
           pathType: Prefix
         - path: /filmText
           pathType: Prefix
     # catch-all rule (must be LAST)
-    - host: springboot-demo*.com
+    - host: springboot-demo.com
       paths:
         - path: /
           pathType: Prefix
