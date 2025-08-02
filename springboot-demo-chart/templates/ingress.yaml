@@ -40,14 +40,4 @@ spec:
                   number: {{ $.Values.service.port }}
           {{- end }}
     {{- end }}
-    # catch-all rule (must be LAST)
-    - http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: {{ include "springboot-demo-chart.fullname" $ }}-service
-                port:
-                  number: {{ $.Values.service.port }}
 {{- end }}
