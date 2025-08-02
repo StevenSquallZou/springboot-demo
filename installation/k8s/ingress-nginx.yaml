@@ -273,12 +273,14 @@ spec:
   type: NodePort
   ports:
     - name: http
-      port: 80
+      port: 80 # Service port (cluster-internal)
+      nodePort: 30080 # Fixed external port (must be 30000-32767)
       protocol: TCP
       targetPort: http
       appProtocol: http
     - name: https
-      port: 443
+      port: 443 # Service port (cluster-internal)
+      nodePort: 30443 # Fixed external port (must be 30000-32767)
       protocol: TCP
       targetPort: https
       appProtocol: https
