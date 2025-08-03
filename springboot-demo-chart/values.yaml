@@ -67,22 +67,22 @@ ingress:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: "hello.{{ .Values.config.app.hostname }}"
+    - host: "hello.*app_hostname"
       paths:
         - path: /hello
           pathType: Prefix
-    - host: "world.{{ .Values.config.app.hostname }}"
+    - host: "world.*app_hostname"
       paths:
         - path: /country
           pathType: Prefix
-    - host: "sakila.{{ .Values.config.app.hostname }}"
+    - host: "sakila.*app_hostname"
       paths:
         - path: /actor
           pathType: Prefix
         - path: /filmText
           pathType: Prefix
     # catch-all rule (must be LAST)
-    - host: "{{ .Values.config.app.hostname }}"
+    - host: "*app_hostname"
       paths:
         - path: /
           pathType: Prefix
@@ -161,7 +161,7 @@ affinity: {}
 config:
   # App Configuration
   app:
-    hostname: springboot-demo.com
+    hostname: &app_hostname springboot-demo.com
     port: 30080
 
   # Database Configuration
