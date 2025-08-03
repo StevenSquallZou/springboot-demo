@@ -67,22 +67,22 @@ ingress:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: "hello.{{ .Values.config.hostname }}"
+    - host: "hello.{{ .Values.config.app.hostname }}"
       paths:
         - path: /hello
           pathType: Prefix
-    - host: "world.{{ .Values.config.hostname }}"
+    - host: "world.{{ .Values.config.app.hostname }}"
       paths:
         - path: /country
           pathType: Prefix
-    - host: "sakila.{{ .Values.config.hostname }}"
+    - host: "sakila.{{ .Values.config.app.hostname }}"
       paths:
         - path: /actor
           pathType: Prefix
         - path: /filmText
           pathType: Prefix
     # catch-all rule (must be LAST)
-    - host: "{{ .Values.config.hostname }}"
+    - host: "{{ .Values.config.app.hostname }}"
       paths:
         - path: /
           pathType: Prefix
