@@ -16,6 +16,12 @@ public class SwaggerConfig {
     @Value("${APP_VERSION}")
     protected String appVersion;
 
+    @Value("${APP_HOSTNAME:localhost}")
+    protected String appHostname;
+
+    @Value("${APP_PORT:${server.port}}")
+    protected int appPort;
+
 
     @Bean
     public OpenAPI customOpenAPI() {
@@ -26,8 +32,9 @@ public class SwaggerConfig {
 
         OpenAPI openAPI = new OpenAPI();
         openAPI.setInfo(info);
-        openAPI.addServersItem(new Server().url("http://springboot-demo.com:30080"));
-        log.info("Overriding server url to http://springboot-demo.com:30080");
+        String url = "http://" + appHostname + ":" + appPort;
+        log.info("set server url to {}", url);
+        openAPI.addServersItem(new Server().url(url));
 
         return openAPI;
     }

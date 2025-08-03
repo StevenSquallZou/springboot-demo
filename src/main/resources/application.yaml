@@ -37,11 +37,6 @@ spring:
         timeout: 2000
 
 
-springdoc:
-  servers:
-    - url: http://${APP_HOSTNAME:localhost}:${APP_PORT:8080}
-
-
 management:
   endpoints:
     web:

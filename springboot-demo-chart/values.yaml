@@ -161,7 +161,7 @@ affinity: {}
 config:
   # App Configuration
   app:
-    hostname: springboot-demo.com
+    hostname: "springboot-demo.com"
     port: 30080
 
   # Database Configuration
