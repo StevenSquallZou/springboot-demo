@@ -43,7 +43,7 @@ public class CountryController {
             @Parameter(name = "name", description = "name of the country to fetch", required = true, example = "China", in = ParameterIn.QUERY)
         }
     )
-    @ApiResponse(responseCode = "200", description = "Successfully retrieved data", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Country.class))))
+    @ApiResponse(responseCode = "200", description = "Successfully retrieved data", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Country.class, description = "the fetched country list"))))
     @ApiResponse(responseCode = "400", description = "Invalid name supplied")
     @GetMapping("/country")
     public List<Country> getCountryByName(@RequestParam(name = "name") @NotBlank @Size(min = 1, max = 52) String name) {

@@ -2,7 +2,15 @@ package demo.controller;
 
 
 import demo.model.sakila.FilmText;
+import demo.model.world.Country;
 import demo.service.api.IFilmTextService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,8 +52,14 @@ public class FilmTextController {
     }
 
 
+    @Operation(
+        summary = "Create a FilmText",
+        description = "Create a FilmText with all the given details"
+    )
+    @ApiResponse(responseCode = "200", description = "Successfully created FilmText", content = @Content(schema = @Schema(implementation = Integer.class, description = "the count of the created FilmText record", example = "1")))
+    @ApiResponse(responseCode = "400", description = "Invalid FilmText supplied")
     @PostMapping
-    public int createFilmText(@Validated @RequestBody FilmText filmText) {
+    public int createFilmText(@RequestBody @Validated FilmText filmText) {
         log.info("saveFilmText -> input filmText: {}", filmText);
 
         int result = filmTextService.createFilmText(filmText);
