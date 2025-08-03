@@ -19,6 +19,7 @@
         <commons-collections4.version>4.5.0</commons-collections4.version>
         <mysql-connector-j.version>9.3.0</mysql-connector-j.version>
         <mybatis-spring-boot-starter.version>3.0.4</mybatis-spring-boot-starter.version>
+        <springdoc-openapi-starter-webmvc-ui.version>2.8.9</springdoc-openapi-starter-webmvc-ui.version>
     </properties>
 
 
@@ -30,7 +31,7 @@
 
 
     <dependencies>
-        <!--springboot libs start-->
+        <!--spring libs start-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -56,7 +57,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
-        <!--springboot libs end-->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>${springdoc-openapi-starter-webmvc-ui.version}</version>
+        </dependency>
+        <!--spring libs end-->
 
         <!--apache libs start-->
         <dependency>

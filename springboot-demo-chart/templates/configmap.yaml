@@ -7,6 +7,7 @@ metadata:
     kubectl.kubernetes.io/last-applied-configuration: ""
 
 data:
+  APP_VERSION: {{ .Chart.AppVersion | quote }}
   BASE_JDBC_URL: {{ .Values.config.jdbc.baseUrl | quote }}
   APP_DB_USERNAME: {{ .Values.config.jdbc.usernames.app | quote }}
   WORLD_DB_USERNAME: {{ .Values.config.jdbc.usernames.world | quote }}
