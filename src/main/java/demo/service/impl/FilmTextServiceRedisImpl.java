@@ -29,12 +29,6 @@ public class FilmTextServiceRedisImpl implements IFilmTextService {
     public FilmText getFilmTextByFilmId(Integer filmId) {
         FilmText filmText = filmTextRedisManager.getFilmText(filmId);
         if (filmText != null) {
-            log.info("getFilmTextByFilmId -> Film text found in Redis for filmId={}", filmId);
-            return filmText;
-        }
-
-        filmText = filmTextRedisManager.reloadFromDB(filmId);
-        if (filmText != null) {
             return filmText;
         }
 
@@ -51,7 +45,7 @@ public class FilmTextServiceRedisImpl implements IFilmTextService {
         int result = filmTextMapper.insertFilmText(filmText);
         log.info("saveFilmText -> insert result: {}", result);
 
-        filmTextRedisManager.updateAll(filmText);
+        filmTextRedisManager.updateAllCache(filmText);
         log.info("saveFilmText -> updated redis for filmId={}", filmText.getFilmId());
 
         return result;

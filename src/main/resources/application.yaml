@@ -52,7 +52,11 @@ app:
     loadBatchSize: 100
     expirationSeconds:
       default: 300
-      filmText: 5
+      filmText: 10
+    lock:
+      seconds: 60
+      max-retries: 10
+      sleep-millis: 5000
 
 
 datasource:

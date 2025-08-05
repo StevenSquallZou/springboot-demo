@@ -1,7 +1,9 @@
 package demo.redis;
 
 
+import demo.exception.RedisLockException;
 import demo.model.sakila.FilmText;
+import demo.utils.MyUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.InitializingBean;
@@ -9,12 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 
@@ -23,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 public class FilmTextRedisManager implements CommandLineRunner, InitializingBean {
     public static final String FILM_TEXT_VALUE_KEY_PREFIX = "filmTextValue:";
     public static final String FILM_TEXT_HASH_KEY_PREFIX = "filmTextHash:";
+    private static final String LOCK_PREFIX = "lock:";
     private static final String FILM_TEXT_QUERY_WITH_LIMIT = "SELECT * FROM sakila.film_text ORDER BY film_id LIMIT %d OFFSET %d";
     private static final String FILM_TEXT_QUERY = "SELECT * FROM sakila.film_text WHERE film_id = ?";
 
@@ -30,8 +35,16 @@ public class FilmTextRedisManager implements CommandLineRunner, InitializingBean
     protected int loadBatchSize;
     @Value("${app.redis.expirationSeconds.filmText:${app.redis.expirationSeconds.default}}")
     protected int expirationSeconds;
+    @Value("${app.redis.lock.seconds}")
+    protected int lockSeconds;
+    @Value("${app.redis.lock.max-retries}")
+    protected int lockMaxRetries;
+    @Value("${app.redis.lock.sleep-millis}")
+    protected int lockSleepMillis;
+
     protected JdbcTemplate jdbcTemplate;
     protected RedisTemplate<String, Object> redisTemplate;
+    protected Random random = new Random();
 
 
     @Autowired
@@ -70,9 +83,7 @@ public class FilmTextRedisManager implements CommandLineRunner, InitializingBean
 
             int loadedCount = 0;
             for (FilmText filmText : filmTextList) {
-                updateOpsForValue(filmText);
-
-                updateOpsForHash(filmText);
+                updateAllCache(filmText);
 
                 loadedCount++;
             }
@@ -90,7 +101,36 @@ public class FilmTextRedisManager implements CommandLineRunner, InitializingBean
         String valueKey = getFilmTextValueKey(filmId);
         log.info("getFilmTextByFilmId -> retrieving film text for filmId: {}, redis valueKey: {}", filmId, valueKey);
 
-        return (FilmText) redisTemplate.opsForValue().get(valueKey);
+        String lockKey = LOCK_PREFIX + valueKey;
+        ValueOperations<String, Object> opsForValue = redisTemplate.opsForValue();
+        int retries = 0;
+        Boolean lockAcquired = false;
+
+        try {
+            while (retries < lockMaxRetries) {
+                FilmText filmText = (FilmText) opsForValue.get(valueKey);
+                if (filmText != null) {
+                    log.info("getFilmTextByFilmId -> Film text found in Redis for filmId={}", filmId);
+                    return filmText;
+                }
+
+                lockAcquired = opsForValue.setIfAbsent(lockKey, "locked", lockSeconds, TimeUnit.SECONDS);
+                if (Boolean.TRUE.equals(lockAcquired)) {
+                    return reloadFromDB(filmId);
+                } else {
+                    log.warn("failed to acquire the lock, retries: {}", retries);
+                    MyUtils.silentlySleep(lockSleepMillis);
+                }
+
+                retries++;
+            }
+        } finally {
+            if (Boolean.TRUE.equals(lockAcquired)) {
+                redisTemplate.delete(lockKey);
+            }
+        }
+
+        throw new RedisLockException("Failed to acquire the lock after " + lockMaxRetries + " retries");
     }
 
 
@@ -101,7 +141,7 @@ public class FilmTextRedisManager implements CommandLineRunner, InitializingBean
     }
 
 
-    public void updateAll(FilmText filmText) {
+    public void updateAllCache(FilmText filmText) {
         updateOpsForValue(filmText);
 
         updateOpsForHash(filmText);
@@ -111,7 +151,7 @@ public class FilmTextRedisManager implements CommandLineRunner, InitializingBean
     private void updateOpsForValue(FilmText filmText) {
         String valueKey = getFilmTextValueKey(filmText.getFilmId());
 
-        redisTemplate.opsForValue().set(valueKey, filmText, expirationSeconds, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set(valueKey, filmText, getRandomTTl(), TimeUnit.SECONDS);
     }
 
 
@@ -124,7 +164,7 @@ public class FilmTextRedisManager implements CommandLineRunner, InitializingBean
         String hashKey = getFilmTextHashKey(filmText.getFilmId());
 
         redisTemplate.opsForHash().putAll(hashKey, filmTextMap);
-        redisTemplate.expire(hashKey, expirationSeconds, TimeUnit.SECONDS);
+        redisTemplate.expire(hashKey, getRandomTTl(), TimeUnit.SECONDS);
     }
 
 
@@ -139,7 +179,7 @@ public class FilmTextRedisManager implements CommandLineRunner, InitializingBean
         }
 
         FilmText filmText = filmTextList.get(0);
-        updateAll(filmText);
+        updateAllCache(filmText);
 
         return filmText;
     }
@@ -155,10 +195,18 @@ public class FilmTextRedisManager implements CommandLineRunner, InitializingBean
     }
 
 
+    protected long getRandomTTl() {
+        return expirationSeconds + random.nextLong(expirationSeconds);
+    }
+
+
     @Override
     public void afterPropertiesSet() {
         log.info("loadBatchSize: {}", loadBatchSize);
         log.info("expirationSeconds: {}", expirationSeconds);
+        log.info("lockSeconds: {}", lockSeconds);
+        log.info("lockMaxRetries: {}", lockMaxRetries);
+        log.info("lockSleepMillis: {}", lockSleepMillis);
     }
 
 }
