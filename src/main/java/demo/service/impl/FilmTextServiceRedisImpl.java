@@ -30,11 +30,10 @@ public class FilmTextServiceRedisImpl implements IFilmTextService {
         FilmText filmText = filmTextRedisManager.getFilmText(filmId);
         if (filmText != null) {
             return filmText;
+        } else {
+            log.warn("getFilmTextByFilmId -> No film text found in Redis and DB for filmId={}", filmId);
+            return null;
         }
-
-        log.warn("getFilmTextByFilmId -> No film text found in Redis and DB for filmId={}", filmId);
-
-        return null;
     }
 
 
@@ -56,19 +55,11 @@ public class FilmTextServiceRedisImpl implements IFilmTextService {
     public Object getFilmTextAttribute(Integer filmId, String attributeName) {
         Object filmTextAttributeValue = filmTextRedisManager.getFilmTextAttribute(filmId, attributeName);
         if (filmTextAttributeValue != null) {
-            log.info("getFilmTextAttribute -> Film text attribute found in Redis for filmId={}, filmTextAttributeValue={}", filmId, filmTextAttributeValue);
             return filmTextAttributeValue;
+        } else {
+            log.warn("getFilmTextAttribute -> No film text found in Redis and DB for filmId={}", filmId);
+            return null;
         }
-
-        FilmText filmText = filmTextRedisManager.reloadFromDB(filmId);
-        if (filmText != null) {
-            filmTextAttributeValue = filmTextRedisManager.getFilmTextAttribute(filmId, attributeName);
-            return filmTextAttributeValue;
-        }
-
-        log.warn("getFilmTextAttribute -> No film text found in Redis and DB for filmId={}", filmId);
-
-        return null;
     }
 
 }

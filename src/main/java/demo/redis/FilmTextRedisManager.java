@@ -10,6 +10,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -110,7 +111,7 @@ public class FilmTextRedisManager implements CommandLineRunner, InitializingBean
             while (retries < lockMaxRetries) {
                 FilmText filmText = (FilmText) opsForValue.get(valueKey);
                 if (filmText != null) {
-                    log.info("getFilmTextByFilmId -> Film text found in Redis for filmId={}", filmId);
+                    log.info("getFilmTextByFilmId -> film text found in Redis for filmId={}", filmId);
                     return filmText;
                 }
 
@@ -118,7 +119,8 @@ public class FilmTextRedisManager implements CommandLineRunner, InitializingBean
                 if (Boolean.TRUE.equals(lockAcquired)) {
                     return reloadFromDB(filmId);
                 } else {
-                    log.warn("failed to acquire the lock, retries: {}", retries);
+                    log.warn("getFilmTextByFilmId -> failed to acquire the lock for lockKey: {}, retries: {}", lockKey, retries);
+
                     MyUtils.silentlySleep(lockSleepMillis);
                 }
 
@@ -130,14 +132,53 @@ public class FilmTextRedisManager implements CommandLineRunner, InitializingBean
             }
         }
 
-        throw new RedisLockException("Failed to acquire the lock after " + lockMaxRetries + " retries");
+        throw new RedisLockException("Failed to acquire the lock for lockKey" + lockKey + " after " + lockMaxRetries + " retries");
     }
 
 
     public Object getFilmTextAttribute(Integer filmId, String attributeName) {
         String hashKey = getFilmTextHashKey(filmId);
+        String lockKey = LOCK_PREFIX + hashKey;
+        HashOperations<String, Object, Object> opsForHash = redisTemplate.opsForHash();
+        int retries = 0;
+        Boolean acquiredLock = false;
 
-        return redisTemplate.opsForHash().get(hashKey, attributeName);
+        try {
+            while (retries < lockMaxRetries) {
+                Object filmTextAttributeValue = opsForHash.get(hashKey, attributeName);
+                if (filmTextAttributeValue != null) {
+                    log.info("getFilmTextAttribute -> film text attribute found in Redis for filmId={}, filmTextAttributeValue={}", filmId, filmTextAttributeValue);
+                    return filmTextAttributeValue;
+                }
+
+                acquiredLock = redisTemplate.opsForValue().setIfAbsent(lockKey, "locked", lockSeconds, TimeUnit.SECONDS);
+                if (Boolean.TRUE.equals(acquiredLock)) {
+                    MyUtils.silentlySleep(10000L);
+                    FilmText filmText = reloadFromDB(filmId);
+                    if (filmText != null) {
+                        updateAllCache(filmText);
+
+                        return opsForHash.get(hashKey, attributeName);
+                    } else {
+                        log.info("getFilmTextAttribute -> film text NOT found in DB for filmId={}", filmId);
+
+                        return null;
+                    }
+                } else {
+                    log.warn("getFilmTextAttribute -> failed to acquire the lock for lockKey: {}, retries: {}", lockKey, retries);
+
+                    MyUtils.silentlySleep(lockSleepMillis);
+                }
+
+                retries++;
+            }
+        } finally {
+            if (Boolean.TRUE.equals(acquiredLock)) {
+                redisTemplate.delete(lockKey);
+            }
+        }
+
+        throw new RedisLockException("Failed to acquire lock for lockKey: " + lockKey + " after " + retries + " retries");
     }
 
 
