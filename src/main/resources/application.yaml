@@ -1,7 +1,9 @@
 #debug: true
 logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%logger{36}] %msg%n"
   level:
-    root: INFO
+#    root: DEBUG
     demo: DEBUG
 
 
@@ -16,6 +18,20 @@ spring:
   application:
     name: springboot-demo
 
+  profiles:
+#    active: dev_group # activated from env variable SPRING_PROFILES_ACTIVE
+    group:
+      dev_group: redis,dev # Defines what profiles are included in "dev_group"
+      uat_group: redis,uat
+
+  cloud:
+    config:
+      fail-fast: true
+      label: main
+  config:
+    import:
+      - configserver:http://localhost:8888
+
   jpa:
     show-sql: true
     properties:
@@ -23,40 +39,15 @@ spring:
         format_sql: true
     hibernate.naming.physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
 
-  data:
-    redis:
-      host: ${REDIS_HOST}
-      port: ${REDIS_PORT}
-      password: ${REDIS_PASSWORD}
-      timeout: 2000
-      database: 0
-      lettuce:
-        max-active: 8
-        max-idle: 8
-        min-idle: 0
-        timeout: 2000
-
 
 management:
   endpoints:
     web:
       exposure:
-        include: health
+        include: health,refresh,info
   endpoint:
     health:
       show-details: always
-
-
-app:
-  redis:
-    loadBatchSize: 100
-    expirationSeconds:
-      default: 300
-      filmText: 10
-    lock:
-      seconds: 60
-      max-retries: 10
-      sleep-millis: 5000
 
 
 datasource:
