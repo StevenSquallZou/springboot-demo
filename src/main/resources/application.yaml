@@ -21,8 +21,8 @@ spring:
   profiles:
 #    active: dev_group # activated from env variable SPRING_PROFILES_ACTIVE
     group:
-      dev_group: redis,dev # Defines what profiles are included in "dev_group"
-      uat_group: redis,uat
+      dev_group: dev,datasource,redis # Defines what profiles are included in "dev_group"
+      uat_group: uat,datasource,redis
 
   cloud:
     config:
@@ -31,13 +31,6 @@ spring:
   config:
     import:
       - configserver:http://localhost:8888
-
-  jpa:
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-    hibernate.naming.physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
 
 
 management:
@@ -48,38 +41,3 @@ management:
   endpoint:
     health:
       show-details: always
-
-
-datasource:
-  app:
-    jdbc-url: ${BASE_JDBC_URL}
-    username: ${APP_DB_USERNAME}
-    password: ${APP_DB_PASSWORD}
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    pool-name: appHikariCP
-    maximum-pool-size: 5
-    minimum-idle: 1
-    connection-timeout: 30000
-    connection-test-query: SELECT 1
-
-  world:
-    jdbc-url: ${BASE_JDBC_URL}/world
-    username: ${WORLD_DB_USERNAME}
-    password: ${WORLD_DB_PASSWORD}
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    pool-name: worldHikariCP
-    maximum-pool-size: 5
-    minimum-idle: 1
-    connection-timeout: 30000
-    connection-test-query: SELECT 1
-
-  sakila:
-    jdbc-url: ${BASE_JDBC_URL}/sakila
-    username: ${SAKILA_DB_USERNAME}
-    password: ${SAKILA_DB_PASSWORD}
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    pool-name: sailaHikariCP
-    maximum-pool-size: 5
-    minimum-idle: 1
-    connection-timeout: 30000
-    connection-test-query: SELECT 1
