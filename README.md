@@ -28,7 +28,7 @@ This repo is an experimental space to try features of SpringBoot.
 - 
   FLUSH PRIVILEGES;
 - Set up the following environment variables:
-  - SPRING_PROFILES_ACTIVE: dev_group (or uat_group, prod_group)
+  - SPRING_PROFILES_ACTIVE: dev-group (or uat-group, prod-group)
   - BASE_JDBC_URL: the base JDBC URL for MySQL, e.g., `jdbc:mysql://localhost:3306`
   - APP_DB_USERNAME: the DB username used by app for all the databases
   - APP_DB_PASSWORD: the DB password used by app for all the databases

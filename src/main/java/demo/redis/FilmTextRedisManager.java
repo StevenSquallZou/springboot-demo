@@ -10,6 +10,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -24,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 
 
 @Component
+@RefreshScope
 @Slf4j
 public class FilmTextRedisManager implements CommandLineRunner, InitializingBean {
     public static final String FILM_TEXT_VALUE_KEY_PREFIX = "filmTextValue:";

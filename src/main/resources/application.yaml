@@ -19,10 +19,10 @@ spring:
     name: springboot-demo
 
   profiles:
-#    active: dev_group # activated from env variable SPRING_PROFILES_ACTIVE
+    active: dev-group # can be activated from env variable SPRING_PROFILES_ACTIVE
     group:
-      dev_group: dev,datasource,redis # Defines what profiles are included in "dev_group"
-      uat_group: uat,datasource,redis
+      dev-group: dev,datasource,redis # Defines what profiles are included in "dev-group"
+      uat-group: uat,datasource,redis
 
   cloud:
     config:
