@@ -17,7 +17,7 @@ image:
 imagePullSecrets: []
 # This is to override the chart name.
 nameOverride: ""
-fullnameOverride: ""
+fullnameOverride: "springboot-demo"
 
 # This section builds out the service account more information can be found here: https://kubernetes.io/docs/concepts/security/service-accounts/
 serviceAccount:
@@ -162,7 +162,12 @@ config:
   # App Configuration
   app:
     hostname: "springboot-demo.com"
-    port: 30080
+    port: 30080 # ingress-nginx listens on this port, which can be accessed outside the K8s cluster
+
+  configServer:
+    hostname: "http://config-server-service"
+    port: 8888 # service port, can be accessed inside the K8s cluster
+
 
   # Database Configuration
   jdbc:
@@ -171,13 +176,8 @@ config:
       app: "app"
       world: "world_admin"
       sakila: "sakila_admin"
-    passwords:
-      app: "QXBwI2VkYzRyZnY="
-      world: "V29ybGQjZWRjNHJmdg=="
-      sakila: "U2FraWxhI2VkYzRyZnY="
 
   # Redis Configuration
   redis:
     host: "192.168.150.130"
     port: "6379"
-    password: "UmVkaXMjZWRjNHJmdg=="
