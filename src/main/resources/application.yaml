@@ -30,7 +30,7 @@ spring:
       label: main
   config:
     import:
-      - configserver:${CONFIG_SERVER_HOSTNAME:localhost}:${CONFIG_SERVER_PORT:8888}
+      - configserver:${CONFIG_SERVER_HOSTNAME:http://localhost}:${CONFIG_SERVER_PORT:8888}
 
 
 management:
