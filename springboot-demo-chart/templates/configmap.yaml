@@ -12,9 +12,3 @@ data:
   APP_PORT: {{ .Values.config.app.port | quote }}
   CONFIG_SERVER_HOSTNAME: {{ .Values.config.configServer.hostname | quote }}
   CONFIG_SERVER_PORT: {{ .Values.config.configServer.port | quote }}
-  BASE_JDBC_URL: {{ .Values.config.jdbc.baseUrl | quote }}
-  APP_DB_USERNAME: {{ .Values.config.jdbc.usernames.app | quote }}
-  WORLD_DB_USERNAME: {{ .Values.config.jdbc.usernames.world | quote }}
-  SAKILA_DB_USERNAME: {{ .Values.config.jdbc.usernames.sakila | quote }}
-  REDIS_HOST: {{ .Values.config.redis.host | quote }}
-  REDIS_PORT: {{ .Values.config.redis.port | quote }}

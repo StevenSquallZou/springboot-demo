@@ -167,17 +167,3 @@ config:
   configServer:
     hostname: "http://config-server-service"
     port: 8888 # service port, can be accessed inside the K8s cluster
-
-
-  # Database Configuration
-  jdbc:
-    baseUrl: "jdbc:mysql://192.168.150.130:3306"
-    usernames:
-      app: "app"
-      world: "world_admin"
-      sakila: "sakila_admin"
-
-  # Redis Configuration
-  redis:
-    host: "192.168.150.130"
-    port: "6379"
