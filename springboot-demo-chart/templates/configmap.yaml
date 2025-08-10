@@ -10,8 +10,8 @@ data:
   APP_VERSION: {{ .Chart.AppVersion | quote }}
   APP_HOSTNAME: {{ .Values.config.app.hostname | quote }}
   APP_PORT: {{ .Values.config.app.port | quote }}
-  CONFIG_SERVER_HOSTNAME: { { .Values.config.configServer.hostname | quote } }
-  CONFIG_SERVER_PORT: { { .Values.config.configServer.port | quote } }
+  CONFIG_SERVER_HOSTNAME: {{ .Values.config.configServer.hostname | quote }}
+  CONFIG_SERVER_PORT: {{ .Values.config.configServer.port | quote }}
   BASE_JDBC_URL: {{ .Values.config.jdbc.baseUrl | quote }}
   APP_DB_USERNAME: {{ .Values.config.jdbc.usernames.app | quote }}
   WORLD_DB_USERNAME: {{ .Values.config.jdbc.usernames.world | quote }}
