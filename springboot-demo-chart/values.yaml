@@ -108,7 +108,7 @@ livenessProbe:
   httpGet:
     path: /actuator/health
     port: http
-  initialDelaySeconds: 90  # Adjust based on app startup time
+  initialDelaySeconds: 300  # Adjust based on app startup time
   periodSeconds: 10
   timeoutSeconds: 5
   failureThreshold: 3
@@ -116,7 +116,7 @@ readinessProbe:
   httpGet:
     path: /actuator/health
     port: http
-  initialDelaySeconds: 45
+  initialDelaySeconds: 60
   periodSeconds: 10
   timeoutSeconds: 5
   failureThreshold: 3
