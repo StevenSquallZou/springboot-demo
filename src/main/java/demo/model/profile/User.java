@@ -69,4 +69,15 @@ public class User {
         this.resourceSet.add(resource);
     }
 
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", username='" + username + '\'' +
+//                ", passwordHash='" + passwordHash + '\'' +
+                ", resourceSet=" + resourceSet +
+                '}';
+    }
+
 }

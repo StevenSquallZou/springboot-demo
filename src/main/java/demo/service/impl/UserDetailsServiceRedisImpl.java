@@ -2,41 +2,38 @@ package demo.service.impl;
 
 
 import demo.redis.UserRedisManager;
-import demo.service.api.IUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 
-@Service("userServiceRedisImpl")
+@Service("userDetailsServiceRedisImpl")
 @Slf4j
-public class UserServiceRedisImpl implements IUserService {
+public class UserDetailsServiceRedisImpl implements UserDetailsService {
     protected UserRedisManager userRedisManager;
 
 
     @Autowired
-    public UserServiceRedisImpl(UserRedisManager userRedisManager) {
+    public UserDetailsServiceRedisImpl(UserRedisManager userRedisManager) {
         this.userRedisManager = userRedisManager;
     }
 
 
     @Override
-    public UserDetails getUserDetailsByUsername(String username) {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         demo.model.profile.User user = userRedisManager.getUser(username);
         if (user == null) {
-            log.warn("getUserDetailsByUsername -> No user found in Redis and DB for username={}", username);
-            return null;
+            log.warn("loadUserByUsername -> No user found in Redis and DB for username={}", username);
+            throw new UsernameNotFoundException("No user found with username: " + username);
         }
 
         User.UserBuilder userBuilder = User.withUsername(user.getUsername())
                 .password(user.getPasswordHash())
-                .authorities(user.getResourceSet().toArray(new String[0]))
-                .accountExpired(false)
-                .accountLocked(false)
-                .credentialsExpired(false)
-                .disabled(false);
+                .authorities(user.getResourceSet().toArray(new String[0]));
 
         return userBuilder.build();
     }

@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit;
 public class UserRedisManager implements CommandLineRunner, InitializingBean {
     public static final String USER_VALUE_KEY_PREFIX = "userValue:";
     private static final String LOCK_PREFIX = "lock:";
-    private static final String USER_QUERY_WITH_LIMIT =
+    private static final String USER_QUERY_ALL =
         """
         SELECT
             u.user_id, u.username, u.password_hash, r.resource_name
@@ -39,7 +39,15 @@ public class UserRedisManager implements CommandLineRunner, InitializingBean {
         JOIN profile.resource r ON r.resource_id = ur.resource_id
         ORDER BY ur.user_resource_id, ur.user_id, ur.resource_id
         """;
-    private static final String USER_QUERY = "SELECT * FROM profile.users WHERE username = ?";
+    private static final String USER_QUERY =
+        """
+        SELECT
+            u.user_id, u.username, u.password_hash, r.resource_name
+        FROM profile.users u
+        JOIN profile.user_resource ur ON ur.user_id = u.user_id
+        JOIN profile.resource r ON r.resource_id = ur.resource_id
+        WHERE u.username = ?
+        """;
 
     @Value("${app.redis.expirationSeconds.user:${app.redis.expirationSeconds.default}}")
     protected int expirationSeconds;
@@ -69,8 +77,8 @@ public class UserRedisManager implements CommandLineRunner, InitializingBean {
 
 
     public void loadUsers() {
-        log.debug("loadUsers -> Executing SQL: \n{}", USER_QUERY_WITH_LIMIT);
-        List<UserResource> userResourceList = jdbcTemplate.query(USER_QUERY_WITH_LIMIT, new BeanPropertyRowMapper<>(UserResource.class));
+        log.debug("loadUsers -> Executing SQL: \n{}", USER_QUERY_ALL);
+        List<UserResource> userResourceList = jdbcTemplate.query(USER_QUERY_ALL, new BeanPropertyRowMapper<>(UserResource.class));
         if (CollectionUtils.isEmpty(userResourceList)) {
             log.debug("loadUsers -> No more userResource data to load, exiting");
             return;
@@ -156,7 +164,8 @@ public class UserRedisManager implements CommandLineRunner, InitializingBean {
 
 
     public List<Object> updateOpsForValues(Collection<User> users) {
-        return redisTemplate.executePipelined(new SessionCallback<>() {
+        return redisTemplate.executePipelined(
+            new SessionCallback<>() {
                 @Override
                 public Object execute(RedisOperations operations) throws DataAccessException {
                     if (CollectionUtils.isEmpty(users)) {
@@ -179,15 +188,24 @@ public class UserRedisManager implements CommandLineRunner, InitializingBean {
     public User reloadFromDB(String username) {
         log.info("reloadFromDB -> Reloading user from DB for username: {}", username);
         log.debug("reloadFromDB -> SQL: {}", USER_QUERY);
-        List<User> userList = jdbcTemplate.query(USER_QUERY, new BeanPropertyRowMapper<>(User.class), username);
-
-        if (CollectionUtils.isEmpty(userList)) {
-            log.warn("reloadFromDB -> No user found in DB for username: {}", username);
+        List<UserResource> userResourceList = jdbcTemplate.query(USER_QUERY, new BeanPropertyRowMapper<>(UserResource.class), username);
+        if (CollectionUtils.isEmpty(userResourceList)) {
+            log.warn("reloadFromDB -> No userResource found in DB for username: {}", username);
             return null;
         }
 
-        User user = userList.get(0);
+        UserResource firstUserResource = userResourceList.get(0);
+        User user = new User();
+        user.setUserId(firstUserResource.getUserId());
+        user.setUsername(firstUserResource.getUsername());
+        user.setPasswordHash(firstUserResource.getPasswordHash());
+
+        for (UserResource userResource : userResourceList) {
+            user.addResource(userResource.getResourceName());
+        }
+
         updateSingleUserCache(user);
+        log.info("reloadFromDB -> updated cache for user: {}", user);
 
         return user;
     }
